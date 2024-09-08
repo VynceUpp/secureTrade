@@ -1,0 +1,46 @@
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 70px;
+    background: #00000060;
+    backdrop-filter: blur(2px);
+}
+
+.header h2 > span {
+    color: blueviolet;
+    font-weight: bold;
+}
+
+.navlinks { 
+    position: relative; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+}
+
+.navlinks:hover {
+    color: blueviolet;
+    transition: all 0.3s ease;
+}
+  
+.navlinks::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: blueviolet;
+    transition: width 0.3s ease-in-out; 
+}
+  
+.navlinks:hover::before {
+    width: 100%;
+}
