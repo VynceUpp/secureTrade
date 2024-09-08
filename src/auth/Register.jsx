@@ -1,54 +1,58 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import './login.css'; // Assuming you want to reuse login styles
 import { Button } from '../components/General';
 import { Eye, EyeOff } from 'lucide-react';
+import { useAuth } from './AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
+  const navigate = useNavigate();
+  const registerForm = useRef(null)
+  const {user, registerUser} = useAuth()
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    password: ''
-  });
+
   const [passwordMatch, setPasswordMatch] = useState(true);
+
+  useEffect(()=> {
+    if(user){
+      navigate('/')
+    }
+  }, [])
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleRegister = (event) => {
-    event.preventDefault();
+  const handleRegister = (e) => {
+    e.preventDefault();
+    const name = registerForm.current.name.value
+    const email = registerForm.current.email.value
+    const phone = registerForm.current.phone.value
+    const password = registerForm.current.password.value
+    const confirmPassword = registerForm.current.confirmPassword.value
 
     // Check if passwords match
-    if (formData.password !== formData.confirmPassword) {
+    if (password !== confirmPassword) {
       setPasswordMatch(false);
     } else {
       setPasswordMatch(true);
-      console.log('Registering user...', formData);
-      // Implement registration logic (e.g., sending data to the backend)
     }
+
+    const userInfo = {name, email, phone, password}
+    registerUser(userInfo)
   };
 
   return (
     <main>
       <div className="signup">
         <h2 className='text-[22px] mb-4'>Register</h2>
-        <form className="form" id="register-form" onSubmit={handleRegister}>
+        <form className="form" id="register-form" onSubmit={handleRegister} ref= {registerForm}>
           
           {/* Name input */}
           <div className="textbox">
             <input 
               type="text" 
-              id="name" 
               name="name" 
-              value={formData.name}
-              onChange={handleInputChange}
               required 
             />
             <label>Name</label>
@@ -59,10 +63,7 @@ const Register = () => {
           <div className="textbox">
             <input 
               type="email" 
-              id="email" 
               name="email" 
-              value={formData.email}
-              onChange={handleInputChange}
               required 
             />
             <label>Email</label>
@@ -73,10 +74,7 @@ const Register = () => {
           <div className="textbox">
             <input 
               type="tel" 
-              id="phone" 
               name="phone" 
-              value={formData.phone}
-              onChange={handleInputChange}
               required 
             />
             <label>Phone</label>
@@ -87,10 +85,7 @@ const Register = () => {
           <div className="textbox">
             <input
               type={passwordVisible ? "text" : "password"}
-              id="password"
               name="password"
-              value={formData.password}
-              onChange={handleInputChange}
               required
             />
             <label>Password</label>
@@ -101,10 +96,7 @@ const Register = () => {
           <div className="textbox">
             <input
               type={passwordVisible ? "text" : "password"}
-              id="confirmPassword"
               name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleInputChange}
               required
             />
             <label>Confirm Password</label>
@@ -125,7 +117,7 @@ const Register = () => {
 
           {/* Error message for password mismatch */}
           {!passwordMatch && (
-            <p className="error text-red-500">Passwords do not match!</p>
+            <p className="error !text-red-500">Passwords do not match!</p>
           )}
 
           {/* Register button */}
