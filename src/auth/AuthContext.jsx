@@ -33,6 +33,7 @@ export const AuthProvider = ({children}) => {
         account.createOAuth2Session(
             'google',
             'http://localhost:5173/',
+            'https://securetradeke.onrender.com',
             'http://localhost:5173/fail'
 
         )
